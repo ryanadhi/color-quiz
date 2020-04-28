@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Constants from "expo-constants";
+import { Audio } from "expo-av";
 
 const colorList = ["#ff0000", "#1100ff", "#00ff00"];
 
@@ -15,13 +16,21 @@ export default function App() {
     setCorrectAnswer(getCorrectAnswer());
   }, [refresh]);
 
-  function onPress(answer) {
+  async function onPress(answer) {
     if (answer === correctAnswer) {
       Alert.alert("Correct");
       setQuestion(getQuestion());
       setRefresh(!refresh);
     } else {
       Alert.alert("Wrong");
+      const soundObject = new Audio.Sound();
+      try {
+        await soundObject.loadAsync(require("./assets/wrong.wav"));
+        await soundObject.playAsync();
+        // Your sound is playing!
+      } catch (error) {
+        // An error occurred!
+      }
     }
   }
 
