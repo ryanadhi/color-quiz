@@ -3,7 +3,16 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Constants from "expo-constants";
 import { Audio } from "expo-av";
 
-const colorList = ["#ff0000", "#1100ff", "#00ff00"];
+const colorList = [
+  "#ff0000",
+  "#1100ff",
+  "#00ff00",
+  "#8800ff",
+  "#ffea00",
+  "#fc8ab9",
+  "#000000",
+  "#FFA500",
+];
 
 export default function App() {
   const [question, setQuestion] = useState(getQuestion());
@@ -18,15 +27,23 @@ export default function App() {
 
   async function onPress(answer) {
     if (answer === correctAnswer) {
-      Alert.alert("Correct");
+      // Alert.alert("Correct");
+      const correctSound = new Audio.Sound();
+      try {
+        await correctSound.loadAsync(require("./assets/correct.wav"));
+        await correctSound.playAsync();
+        // Your sound is playing!
+      } catch (error) {
+        // An error occurred!
+      }
       setQuestion(getQuestion());
       setRefresh(!refresh);
     } else {
-      Alert.alert("Wrong");
-      const soundObject = new Audio.Sound();
+      // Alert.alert("Wrong");
+      const wrongSound = new Audio.Sound();
       try {
-        await soundObject.loadAsync(require("./assets/wrong.wav"));
-        await soundObject.playAsync();
+        await wrongSound.loadAsync(require("./assets/wrong.wav"));
+        await wrongSound.playAsync();
         // Your sound is playing!
       } catch (error) {
         // An error occurred!
@@ -56,8 +73,24 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View
-        style={{ flex: 1, width: "100%", backgroundColor: colorList[question] }}
+        style={{ flex: 2, width: "100%", backgroundColor: colorList[question] }}
       ></View>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "bold",
+          }}
+        >
+          Which one has the same color as above?
+        </Text>
+      </View>
       <View style={styles.optionsContainer}>
         <TouchableOpacity
           style={{
@@ -68,7 +101,6 @@ export default function App() {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
-            borderWidth: 1,
             borderRadius: 50,
             width: 100,
             height: 150,
@@ -76,9 +108,7 @@ export default function App() {
             marginRight: 20,
           }}
           onPress={() => onPress(0)}
-        >
-          <Text>My button</Text>
-        </TouchableOpacity>
+        ></TouchableOpacity>
         <TouchableOpacity
           style={{
             backgroundColor:
@@ -88,7 +118,6 @@ export default function App() {
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
-            borderWidth: 1,
             borderRadius: 50,
             width: 100,
             height: 150,
@@ -96,9 +125,7 @@ export default function App() {
             marginRight: 20,
           }}
           onPress={() => onPress(1)}
-        >
-          <Text>My button</Text>
-        </TouchableOpacity>
+        ></TouchableOpacity>
       </View>
     </View>
   );
@@ -112,42 +139,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  // questionContainer: {
-  //   flex: 1,
-  //   width: "100%",
-  //   backgroundColor: colorList[question],
-  // },
   optionsContainer: {
     flexDirection: "row",
-    flex: 1,
+    flex: 2,
     backgroundColor: "#fff",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
   },
-  // optionOne: {
-  //   backgroundColor:
-  //     correctAnswer === 0 ? colorList[question] : colorList[wrongAnswer],
-  //   flex: 1,
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   borderWidth: 1,
-  //   borderRadius: 50,
-  //   width: 100,
-  //   height: 150,
-  //   marginLeft: 20,
-  //   marginRight: 20,
-  // },
-  // optionTwo: {
-  //   backgroundColor:
-  //     correctAnswer === 1 ? colorList[question] : colorList[wrongAnswer],
-  //   flex: 1,
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   borderWidth: 1,
-  //   borderRadius: 50,
-  //   width: 100,
-  //   height: 150,
-  //   marginLeft: 20,
-  //   marginRight: 20,
-  // },
 });
